@@ -3,5 +3,5 @@ services:
   app:
     image: alexgian/python-spam-detector:base
     volumes:
-      - .:/usr/src/app
+      - ..:/usr/src/app
     command: python app.py
