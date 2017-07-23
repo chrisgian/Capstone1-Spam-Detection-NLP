@@ -18,8 +18,8 @@ warnings.filterwarnings(action='ignore', category=UserWarning, module='gensim')
 # Data of Spam and non spam data from UC Irvine's Spam Repository
 data = pd.read_table('SMSSpamCollection',header= None, names = ('outcome', 'content'))
 # Read my personal text messages 
-new_doc = ["hey dude where are you", "text 444 for a promotional treat", "dont know what time it is", "Our records indicate your Pension is under performing to see higher growth and up to 25% cash release reply PENSION for a free review. To opt out reply STOP",           "To start the process please reply YES. To opt out text STOP", "i'm going to be 10 mins late"]
-new_doc_results = ['ham','spam','ham','spam','spam','ham']
+new_doc = ["hey dude where are you"]
+new_doc_results = ['ham']
 external_data = pd.DataFrame({'content':new_doc, 'outcome':new_doc_results})
 
 # Stop words
@@ -148,17 +148,19 @@ predicted_external = predict_unseen(
     stop_words_in = stopwords_set2,
     symbols_to_remove = stopwords_set2,
     trained_model_in = trained_model)
-performance_on_external = performance(
-    result_x=predicted_external[0],
-    result_y=predicted_external[1])
+
+print(predicted_external[0])
+# performance_on_external = performance(
+#     result_x=predicted_external[0],
+#     result_y=predicted_external[1])
 
 
-results_out = pd.DataFrame({
-    'Train':performance_on_train,
-    'Validate':performance_on_validate,
-    'external':performance_on_external
-}).set_index(
-    [['Accuracy','Precision','Recall','N Size'],
-     ['% Spam / Ham Correct','% Predicted Spam Actually Spam','% Spam Detected','']])
+# results_out = pd.DataFrame({
+#     'Train':performance_on_train,
+#     'Validate':performance_on_validate,
+#     'external':performance_on_external
+# }).set_index(
+#     [['Accuracy','Precision','Recall','N Size'],
+#      ['% Spam / Ham Correct','% Predicted Spam Actually Spam','% Spam Detected','']])
 
-print(results_out)
+# print(results_out)
