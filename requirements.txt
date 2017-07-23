@@ -1,0 +1,9 @@
+nltk
+sub
+matplotlib
+scipy
+sklearn
+seaborn
+pandas
+numpy
+
