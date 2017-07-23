@@ -3,5 +3,6 @@ services:
   app:
     image: alexgian/python-spam-detector:base
     volumes:
-      - ..:/usr/src/app
-    command: python app.py
+      - .:/usr/src/app
+    entrypoint: python ./sb_cl_nlp_for_app.py
+    command: 'Hello world'

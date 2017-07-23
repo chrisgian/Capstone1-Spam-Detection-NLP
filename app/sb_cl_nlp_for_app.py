@@ -15,23 +15,30 @@ import gensim as gs
 import nltk 
 from re import sub # import sub to replace items in the followiong list comprehension
 from collections import defaultdict
-from sklearn.lda import LDA
-import matplotlib.pyplot as plt
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+import matplotlib.pyplot as plts
 import re
 from scipy.stats import ttest_ind
 from sklearn import linear_model
 import seaborn as sns; sns.set(color_codes=True)
 import pickle
+import sys
+import json
 
 warnings.filterwarnings(action='ignore', category=UserWarning, module='gensim')
-get_ipython().magic('matplotlib inline')
+warnings.filterwarnings(action='ignore', category=DeprecationWarning, module='sklearn')
+warnings.filterwarnings(action='ignore', category=UserWarning, module='sklearn')
+# get_ipython().magic('matplotlib inline')
 
 
 # ##### User Input
 
 # In[26]:
 
-new_doc = ["I can probably do something this week? I am almos convinced on idea lol"]
+# new_doc = ["I can probably do something this week? I am almos convinced on idea lol"]
+user_in = sys.argv[1] 
+# print( user_in )
+new_doc = [ user_in ]
 external_data = pd.DataFrame({'content':new_doc})
 
 
@@ -160,7 +167,10 @@ def performance(result_x, result_y):
 
 
 # #### Train Model
-
+stopwords_set1 = set(nltk.corpus.stopwords.words('english'))
+stopwords_set2 = set('for a of the and to in or'.split())
+stopwords_set3 = ''
+symbol_removed1 = '[^A-Za-z0-9]+'
 # In[32]:
 
 retrain = False
@@ -175,16 +185,12 @@ if retrain == True:
     set_n_sizes = 'N\'s in .. train:', train.shape,'test:', test.shape,'validate:', validate.shape
     print('Data Split Correct?', split_correctly, '\n'*2, set_n_sizes)
     data = pd.read_table('SMSSpamCollection',header= None, names = ('outcome', 'content'))
-    stopwords_set1 = set(nltk.corpus.stopwords.words('english'))
-    stopwords_set2 = set('for a of the and to in or'.split())
-    stopwords_set3 = ''
-    symbol_removed1 = '[^A-Za-z0-9]+'
     train_prepped = prep_nlp(data_to_prep = train.content,stop_words_in= stopwords_set2,symbols_to_remove=symbol_removed1)
     built_model = build_model(train_data = train_prepped,topic_n = 300)
     trained_model = train_model(topic_vec = built_model)
     pickle.dump(trained_model, open( "trained.p", "wb" ) )
 else:
-    trained_model = pickle.load( open( "trained.p", "rb" ) )        
+    trained_model = pd.read_pickle( open( "trained.p", "rb" ))        
 
 
 # #### Execute user input
@@ -197,5 +203,7 @@ predicted_external = predict_unseen(
     symbols_to_remove = stopwords_set2,
     trained_model_in = trained_model,y_given = False
 )
-predicted_external
 
+print({ 'result': predicted_external[0], 'input': user_in})
+
+# print json.dumps({"result": predicted_external[0], "input": user_in}, sort_keys=True, indent=4, separators=(',', ': '))
